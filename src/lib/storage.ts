@@ -1,7 +1,7 @@
 import { StudySession, UserProfile, UserPreferences } from "@/types";
 
 const SESSIONS_KEY = "study_break_timer_sessions_v1";
-const PROFILE_KEY = "study_break_timer_profile_v1";
+const PROFILE_KEY = "study_break_timer_profile_v2";
 const ACTIVE_TIMER_KEY = "study_break_timer_active_v1";
 
 export const DEFAULT_PREFERENCES: UserPreferences = {

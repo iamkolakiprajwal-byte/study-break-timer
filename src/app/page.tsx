@@ -37,9 +37,11 @@ export default function Home() {
       setSessions(storedSessions);
 
       const storedUser = storageService.getUserProfile();
-      // If user had previously signed in or visited, load user
-      if (storedUser) {
+      // Only restore genuine authenticated users, never auto-log into demo user
+      if (storedUser && !storedUser.isDemoUser) {
         setCurrentUser(storedUser);
+      } else if (storedUser?.isDemoUser) {
+        storageService.clearUserProfile();
       }
     } catch (e) {
       console.error("Initialization error", e);
