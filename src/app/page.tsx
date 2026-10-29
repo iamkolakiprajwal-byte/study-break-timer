@@ -49,6 +49,28 @@ export default function Home() {
 
     // Listen for Supabase auth state if configured
     if (isSupabaseConfigured && supabase) {
+      // Check existing active Supabase session (e.g. after Google OAuth redirect)
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          const profile: UserProfile = {
+            id: session.user.id,
+            email: session.user.email || "",
+            displayName:
+              session.user.user_metadata?.full_name ||
+              session.user.user_metadata?.name ||
+              session.user.user_metadata?.display_name ||
+              session.user.email?.split("@")[0] ||
+              "Student",
+            avatarUrl: session.user.user_metadata?.avatar_url,
+            preferences: DEFAULT_DEMO_USER.preferences,
+            isDemoUser: false,
+            createdAt: session.user.created_at,
+          };
+          setCurrentUser(profile);
+          storageService.saveUserProfile(profile);
+        }
+      });
+
       const { data: authListener } = supabase.auth.onAuthStateChange(
         (_event, session) => {
           if (session?.user) {
@@ -56,9 +78,12 @@ export default function Home() {
               id: session.user.id,
               email: session.user.email || "",
               displayName:
+                session.user.user_metadata?.full_name ||
+                session.user.user_metadata?.name ||
                 session.user.user_metadata?.display_name ||
                 session.user.email?.split("@")[0] ||
                 "Student",
+              avatarUrl: session.user.user_metadata?.avatar_url,
               preferences: DEFAULT_DEMO_USER.preferences,
               isDemoUser: false,
               createdAt: session.user.created_at,
