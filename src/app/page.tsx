@@ -132,6 +132,7 @@ export default function Home() {
     if (isSupabaseConfigured && supabase) {
       await supabase.auth.signOut().catch(() => {});
     }
+    storageService.clearUserProfile();
     setCurrentUser(null);
     setActiveTab("timer");
     addToast("info", "Signed Out", "You have signed out. You can sign in anytime or continue as a guest.");

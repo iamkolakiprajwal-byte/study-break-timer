@@ -55,11 +55,11 @@ export const storageService = {
     localStorage.removeItem(SESSIONS_KEY);
   },
 
-  getUserProfile(): UserProfile {
-    if (typeof window === "undefined") return DEFAULT_DEMO_USER;
+  getUserProfile(): UserProfile | null {
+    if (typeof window === "undefined") return null;
     try {
       const data = localStorage.getItem(PROFILE_KEY);
-      if (!data) return DEFAULT_DEMO_USER;
+      if (!data) return null;
       const parsed = JSON.parse(data);
       return {
         ...DEFAULT_DEMO_USER,
@@ -71,8 +71,13 @@ export const storageService = {
       };
     } catch (e) {
       console.error("Failed to load profile", e);
-      return DEFAULT_DEMO_USER;
+      return null;
     }
+  },
+
+  clearUserProfile(): void {
+    if (typeof window === "undefined") return;
+    localStorage.removeItem(PROFILE_KEY);
   },
 
   saveUserProfile(profile: UserProfile): void {
